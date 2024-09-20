@@ -9,6 +9,9 @@ class AdminCustomUser(admin.ModelAdmin):
         'id',
         'email',
         'password',
+        'is_active',
+        'is_superuser',
+        'is_staff',
         ] 
     
 admin.site.register(CustomUser, AdminCustomUser)
