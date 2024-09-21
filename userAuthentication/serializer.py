@@ -12,4 +12,20 @@ class CustomUserSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         data['token'] = Token.objects.get(user=instance).key
         return data
-        
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError('Email not found')
+        return value
+ 
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    new_password = serializers.CharField(max_length=128)
+    new_passwordConfirm = serializers.CharField(max_length=128)
+    def validate(self, data):
+        if data['new_password'] != data['new_passwordConfirm']:
+            raise serializers.ValidationError('Passwords do not match')
+        return data

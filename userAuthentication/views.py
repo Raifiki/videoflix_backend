@@ -1,4 +1,5 @@
 from urllib import request
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
@@ -10,8 +11,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
 from userAuthentication.models import CustomUser
-from userAuthentication.serializer import CustomUserSerializer
-from django.contrib.auth.tokens import default_token_generator
+from userAuthentication.serializer import CustomUserSerializer, PasswordResetConfirmSerializer, PasswordResetSerializer
+from django.contrib.auth.tokens import default_token_generator, PasswordResetTokenGenerator
+
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -56,3 +60,51 @@ class LoginView(ObtainAuthToken):
             respData = CustomUserSerializer(user).data
             return Response(respData, content_type='application/json')
         return Response('Invalid Data',status=400)
+    
+class ResetPasswordView(APIView):
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            self._send_password_reset_email(email)
+            return Response({'message': 'Password reset email sent'}, status=200)
+        return Response(serializer.errors, status=400)
+    
+    def _send_password_reset_email(self, email):
+        user = CustomUser.objects.get(email=email)
+        mail = 'leonard_weiss@web.de'# ToDo: change email to: instance.email
+        from_mail = 'django@demomailtrap.com' # ToDo: change email to domain email
+        token_generator=PasswordResetTokenGenerator()
+        token = token_generator.make_token(user)
+        subject = 'Reset your Password'
+        
+        context = {
+            'username': mail.split('@')[0],
+            'reset_pwd_url': 'http://localhost:4200/ResetPassword/?user_id=' + str(user.pk) + '&token=' + token
+        }
+        text_content = 'Please reset your password'
+        html_content = render_to_string('reset_pwd_email.html', context)
+      
+        send_mail(subject, text_content, from_mail, [mail], html_message=html_content)
+        
+class ResetPasswordConfirmView(APIView):
+    def post(self, request, user_id, token):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            #ToDo make authentication with token - start
+            try:
+                user = CustomUser.objects.get(pk=user_id)
+            except CustomUser.DoesNotExist:
+                return Response('User does not exist',status=400)
+            token_generator=PasswordResetTokenGenerator()
+            if not token_generator.check_token(user, token):
+                return Response('token us invalid or expired',status=400)
+            if not user.is_active:
+                return Response('email adress not verified',status=400)
+            #ToDo make authentication with token - end
+            new_password = serializer.validated_data['new_password']
+            user.set_password(new_password)
+            user.save()
+            print(new_password, 'is set')
+            return Response({'message': 'Password reset successfully'}, status=200)
+        return Response(serializer.errors, status=400)
