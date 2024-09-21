@@ -2,16 +2,21 @@ from urllib import request
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from rest_framework.views import APIView
+#imports for rest framework
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+
 from userAuthentication.models import CustomUser
-from userAuthentication.serializer import UserSerializer
+from userAuthentication.serializer import CustomUserSerializer
 from django.contrib.auth.tokens import default_token_generator
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
     authentication_classes = []#[TokenAuthentication]
     
     def create(self, request, *args, **kwargs):
@@ -20,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if password != passwordConfirm: return HttpResponse('Passwords do not match', status=400)
         if CustomUser.objects.filter(email=email).exists(): return HttpResponse('Email already exists', status=400)
         user = CustomUser.objects.create_user(email, password)
-        respData = UserSerializer(user).data
+        respData = CustomUserSerializer(user).data
         return  Response(respData, content_type='application/json')
     
     def validateData(self, data):
@@ -43,3 +48,11 @@ class VerifyEmailView(View):
         user.is_active = True
         user.save()
         return HttpResponse('Email verified', status=200)
+    
+class LoginView(ObtainAuthToken):
+    def post(self, request):
+        user = request.user
+        if user.is_authenticated:
+            respData = CustomUserSerializer(user).data
+            return Response(respData, content_type='application/json')
+        return Response('Invalid Data',status=400)
