@@ -147,11 +147,11 @@ STATICFILES_DIRS = [
 ]
 
 # REST Framework settings
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-       'userAuthentication.authentication.CustomUserAuthentication',
-    ],
-}
+#REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': [
+#       'userAuthentication.authentication.CustomUserAuthentication',
+#    ],
+#}
 
 
 

@@ -19,7 +19,7 @@ def send_verification_email(sender, instance, created, **kwargs):
         
         context = {
             'username': mail.split('@')[0],
-            'verification_url': 'http://127.0.0.1:8000/videoflix/v1/user/verify/' + str(instance.pk) + '/' + token
+            'verification_url': 'http://127.0.0.1:8000/videoflix/v1/user/verify/?user_id=' + str(instance.pk) + '&token=' + token
         }
         text_content = 'Please verify your email'
         html_content = render_to_string('verification_email.html', context)

@@ -29,3 +29,14 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         if data['new_password'] != data['new_passwordConfirm']:
             raise serializers.ValidationError('Passwords do not match')
         return data
+    
+class CreateCustomUserSerializer(serializers.Serializer):
+        email = serializers.EmailField()
+        password = serializers.CharField(max_length=128)
+        passwordConfirm = serializers.CharField(max_length=128)
+        def validate(self, data):
+            if data['password'] != data['passwordConfirm']:
+                raise serializers.ValidationError('Passwords do not match')
+            if CustomUser.objects.filter(email=data['email']).exists():
+                raise serializers.ValidationError('Email already exists')
+            return data

@@ -10,56 +10,45 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
+from userAuthentication.authentication import EmailVerificationAuthentication, LoginCustomUserAuthentication, ResetPasswordTokenAuthentication
 from userAuthentication.models import CustomUser
-from userAuthentication.serializer import CustomUserSerializer, PasswordResetConfirmSerializer, PasswordResetSerializer
+from userAuthentication.serializer import CreateCustomUserSerializer, CustomUserSerializer, PasswordResetConfirmSerializer, PasswordResetSerializer
 from django.contrib.auth.tokens import default_token_generator, PasswordResetTokenGenerator
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 # Create your views here.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
+class UserView(APIView):
     serializer_class = CustomUserSerializer
-    authentication_classes = []#[TokenAuthentication]
     
-    def create(self, request, *args, **kwargs):
-        if not self.validateData(request.data): return HttpResponse('Missing data', status=400)
-        email, password, passwordConfirm = self.getData(request.data)
-        if password != passwordConfirm: return HttpResponse('Passwords do not match', status=400)
-        if CustomUser.objects.filter(email=email).exists(): return HttpResponse('Email already exists', status=400)
-        user = CustomUser.objects.create_user(email, password)
-        respData = CustomUserSerializer(user).data
-        return  Response(respData, content_type='application/json')
+    def post(self, request):
+        serializer = CreateCustomUserSerializer(data = request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+            user = CustomUser.objects.create_user(email, password)
+            respData = CustomUserSerializer(user).data
+            return  Response(respData, content_type='application/json')
+        return Response(serializer.errors, status=400)
     
-    def validateData(self, data):
-        return data.get('email') and data.get('password') and data.get('passwordConfirm')
-    
-    def getData(self, data):
-        email = data.get('email')
-        password = data.get('password')
-        passwordConfirm = data.get('passwordConfirm')
-        return email, password, passwordConfirm
-    
-class VerifyEmailView(View):
-    def get(self, request,user_id, token):
-        try:
-            user = CustomUser.objects.get(pk=user_id)
-        except CustomUser.DoesNotExist:
-            return HttpResponse('Invalid user', status=400)
-        if not default_token_generator.check_token(user, token):
-            return HttpResponse('Invalid token', status=400)
+# ToDo: Eventuell UserView, ResetPwd und VerifyEmail in ein Viewset mit create und put Methoden 
+
+
+class VerifyEmailView(APIView):
+    authentication_classes = [EmailVerificationAuthentication]
+    def get(self, request):
+        user = request.user
         user.is_active = True
         user.save()
         return HttpResponse('Email verified', status=200)
     
 class LoginView(ObtainAuthToken):
+    authentication_classes = [LoginCustomUserAuthentication]
     def post(self, request):
         user = request.user
-        if user.is_authenticated:
-            respData = CustomUserSerializer(user).data
-            return Response(respData, content_type='application/json')
-        return Response('Invalid Data',status=400)
+        respData = CustomUserSerializer(user).data
+        return Response(respData, content_type='application/json')
     
 class ResetPasswordView(APIView):
     def post(self, request):
@@ -74,37 +63,30 @@ class ResetPasswordView(APIView):
         user = CustomUser.objects.get(email=email)
         mail = 'leonard_weiss@web.de'# ToDo: change email to: instance.email
         from_mail = 'django@demomailtrap.com' # ToDo: change email to domain email
-        token_generator=PasswordResetTokenGenerator()
-        token = token_generator.make_token(user)
+        token = self._generate_password_reset_token(user)
         subject = 'Reset your Password'
-        
         context = {
             'username': mail.split('@')[0],
             'reset_pwd_url': 'http://localhost:4200/ResetPassword/?user_id=' + str(user.pk) + '&token=' + token
         }
-        text_content = 'Please reset your password'
+        text_content = 'Hello ' + context['username'] + ', \n Please reset your password: ' + context['reset_pwd_url']
         html_content = render_to_string('reset_pwd_email.html', context)
-      
         send_mail(subject, text_content, from_mail, [mail], html_message=html_content)
         
+    def _generate_password_reset_token(self, user):
+        token_generator=PasswordResetTokenGenerator()
+        return token_generator.make_token(user)
+        
 class ResetPasswordConfirmView(APIView):
-    def post(self, request, user_id, token):
+    authentication_classes = [ResetPasswordTokenAuthentication]
+    def post(self, request):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         if serializer.is_valid():
-            #ToDo make authentication with token - start
-            try:
-                user = CustomUser.objects.get(pk=user_id)
-            except CustomUser.DoesNotExist:
-                return Response('User does not exist',status=400)
-            token_generator=PasswordResetTokenGenerator()
-            if not token_generator.check_token(user, token):
-                return Response('token us invalid or expired',status=400)
-            if not user.is_active:
-                return Response('email adress not verified',status=400)
-            #ToDo make authentication with token - end
             new_password = serializer.validated_data['new_password']
-            user.set_password(new_password)
-            user.save()
-            print(new_password, 'is set')
+            self._change_password(request.user, new_password)
             return Response({'message': 'Password reset successfully'}, status=200)
         return Response(serializer.errors, status=400)
+    
+    def _change_password(self, user, new_password):
+        user.set_password(new_password)
+        user.save()
