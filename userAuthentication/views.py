@@ -1,6 +1,6 @@
 from urllib import request
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 from rest_framework.views import APIView
@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
 
 from userAuthentication.authentication import EmailVerificationAuthentication, LoginCustomUserAuthentication, ResetPasswordTokenAuthentication
 from userAuthentication.models import CustomUser
@@ -17,6 +16,8 @@ from django.contrib.auth.tokens import default_token_generator, PasswordResetTok
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+
+from videoflix.settings import FRONTEND_BASE_URL
 
 # Create your views here.
 class UserView(APIView):
@@ -41,7 +42,8 @@ class VerifyEmailView(APIView):
         user = request.user
         user.is_active = True
         user.save()
-        return HttpResponse('Email verified', status=200)
+        redirect_url = FRONTEND_BASE_URL + '/Login?email=' + user.email
+        return HttpResponseRedirect(redirect_url)
     
 class LoginView(ObtainAuthToken):
     authentication_classes = [LoginCustomUserAuthentication]
@@ -61,13 +63,13 @@ class ResetPasswordView(APIView):
     
     def _send_password_reset_email(self, email):
         user = CustomUser.objects.get(email=email)
-        mail = 'leonard_weiss@web.de'# ToDo: change email to: instance.email
+        mail = 'leonard_weiss@web.de'# ToDo: change email to: email
         from_mail = 'django@demomailtrap.com' # ToDo: change email to domain email
         token = self._generate_password_reset_token(user)
         subject = 'Reset your Password'
         context = {
             'username': mail.split('@')[0],
-            'reset_pwd_url': 'http://localhost:4200/ResetPassword/?user_id=' + str(user.pk) + '&token=' + token
+            'reset_pwd_url': FRONTEND_BASE_URL + '/ResetPassword/?user_id=' + str(user.pk) + '&token=' + token
         }
         text_content = 'Hello ' + context['username'] + ', \n Please reset your password: ' + context['reset_pwd_url']
         html_content = render_to_string('reset_pwd_email.html', context)
@@ -84,7 +86,7 @@ class ResetPasswordConfirmView(APIView):
         if serializer.is_valid():
             new_password = serializer.validated_data['new_password']
             self._change_password(request.user, new_password)
-            return Response({'message': 'Password reset successfully'}, status=200)
+            return Response({'email': request.user.email}, status=200)
         return Response(serializer.errors, status=400)
     
     def _change_password(self, user, new_password):

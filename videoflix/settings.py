@@ -26,7 +26,16 @@ SECRET_KEY = 'django-insecure-8hi_#n)tx8ymiwq9i)l9ca&ei2z!zd3xszvz!%mn44nypn$p+y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+		    'localhost',
+		    '127.0.0.1',
+		]
+CORS_ALLOWED_ORIGINS = [
+		    'http://localhost:4200',
+		    'http://localhost:8000',
+		    'http://127.0.0.1:8000',
+		    'http://127.0.0.1:4200'
+]
 
 
 # Application definition
@@ -48,6 +57,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'userAuthentication.CustomUser'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -146,13 +156,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# REST Framework settings
-#REST_FRAMEWORK = {
-#    'DEFAULT_AUTHENTICATION_CLASSES': [
-#       'userAuthentication.authentication.CustomUserAuthentication',
-#    ],
-#}
-
+FRONTEND_BASE_URL = "http://localhost:4200"
 
 
 
