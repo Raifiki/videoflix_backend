@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'userAuthentication.apps.UserauthenticationConfig',
-    'content',
+    'content.apps.ContentConfig',
+    'imagekit',
 ]
 
 # Define custom user model
@@ -155,6 +156,10 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# Media files
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 FRONTEND_BASE_URL = "http://localhost:4200"
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from content.models import Video
+from content.models import Genre, Video
 
 # Register your models here.
 class AdminVideo(admin.ModelAdmin):
@@ -9,5 +9,14 @@ class AdminVideo(admin.ModelAdmin):
         'title',
         'description',
         ] 
+    readonly_fields = ('thumbnail',)
     
 admin.site.register(Video, AdminVideo)
+
+class AdminGenre(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'name',
+        ] 
+    
+admin.site.register(Genre, AdminGenre)
