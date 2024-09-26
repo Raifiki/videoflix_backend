@@ -2,12 +2,15 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
+from content.views import GenreViewSet, VideoViewSet
 from userAuthentication.views import LoginView, ResetPasswordConfirmView, ResetPasswordView, UserView, VerifyEmailView
 from videoflix import settings
 from django.conf.urls.static import static
 
 
 router = routers.DefaultRouter()
+router.register(r'videoflix/v1/video', VideoViewSet)
+router.register(r'videoflix/v1/genre', GenreViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

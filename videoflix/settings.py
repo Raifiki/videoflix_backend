@@ -163,6 +163,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 FRONTEND_BASE_URL = "http://localhost:4200"
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 

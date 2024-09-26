@@ -1,3 +1,4 @@
+import os
 import sys
 import ffmpeg
 
@@ -17,4 +18,9 @@ def generate_and_store_thumbnail(video_file, thumbnail_file):
                 )
         except ffmpeg.Error as e:
                 print('error:', e.stderr, file=sys.stderr)
+                
+                
+def generate_thumbnail_folder():
+        if not os.path.exists('media/thumbnails'):
+            os.makedirs('media/thumbnails')
     

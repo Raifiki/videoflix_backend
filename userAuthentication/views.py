@@ -1,18 +1,14 @@
-from urllib import request
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import  HttpResponseRedirect
 from django.shortcuts import render
-from django.views import View
 from rest_framework.views import APIView
 #imports for rest framework
-from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from userAuthentication.authentication import EmailVerificationAuthentication, LoginCustomUserAuthentication, ResetPasswordTokenAuthentication
 from userAuthentication.models import CustomUser
 from userAuthentication.serializer import CreateCustomUserSerializer, CustomUserSerializer, PasswordResetConfirmSerializer, PasswordResetSerializer
-from django.contrib.auth.tokens import default_token_generator, PasswordResetTokenGenerator
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string

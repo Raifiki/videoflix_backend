@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_delete, pre_save, post_save
 
 from content.models import Video
-from content.utils import generate_and_store_thumbnail
+from content.utils import generate_and_store_thumbnail, generate_thumbnail_folder
 from videoflix.settings import MEDIA_ROOT
 
 @receiver(post_delete, sender=Video)
@@ -36,6 +36,7 @@ def delete_media_files_on_change(sender, instance, **kwargs):
 @receiver(post_save, sender=Video)
 def generate_thumbnail(sender, instance=None, created=False, **kwargs):
     if not instance.thumbnail:
+        generate_thumbnail_folder()
         thumbnail_path = os.path.join('thumbnails/Video_'+ str(instance.pk) + '_Thumbnail.jpg')
         generate_and_store_thumbnail(instance.video.path, MEDIA_ROOT + '/' + thumbnail_path)
         instance.thumbnail = thumbnail_path
