@@ -5,11 +5,11 @@ from content.models import Genre, Video
 # Register your models here.
 class AdminVideo(admin.ModelAdmin):
     list_display = [
-        'id',
+        'uuid',
         'title',
         'description',
         ] 
-    readonly_fields = ('thumbnail',)
+    readonly_fields = ('thumbnail','database_created','uuid')
     
 admin.site.register(Video, AdminVideo)
 

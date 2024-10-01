@@ -1,6 +1,11 @@
 import os
+import subprocess
 import sys
 import ffmpeg
+
+
+def get_video_upload_path(instance, filename):
+    return 'videos/' + str(instance.uuid) + '/' + filename
 
 def generate_and_store_thumbnail(video_file, thumbnail_file):
         probe = ffmpeg.probe(video_file)
@@ -19,8 +24,21 @@ def generate_and_store_thumbnail(video_file, thumbnail_file):
         except ffmpeg.Error as e:
                 print('error:', e.stderr, file=sys.stderr)
                 
-                
+
+
 def generate_thumbnail_folder():
         if not os.path.exists('media/thumbnails'):
             os.makedirs('media/thumbnails')
+            
+            
+def convert_video_and_store(video_file, fps):
+    new_file_name = video_file.split(".mp4")[0] + "_" + str(fps) +  "p.mp4"
+    cmd_command = 'ffmpeg -i "{}" -s hd{} -c:v libx264 -crf 23 -c:a aac -strict -2 "{}"'.format(video_file,fps , new_file_name)
+    run = subprocess.run(cmd_command, capture_output=True)
     
+def delete_folder_content(folder):
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try: os.remove(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
