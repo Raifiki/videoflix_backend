@@ -3,7 +3,7 @@ import uuid
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from content.utils import get_video_upload_path
+from content.utils import get_video_upload_path, get_video_thumbnail_path
 
 # Create your models here.
 class Video(models.Model):
@@ -13,7 +13,7 @@ class Video(models.Model):
     genre = models.ForeignKey('Genre', on_delete = models.SET_NULL, null=True, blank=True)
     video = models.FileField(upload_to=get_video_upload_path, blank=True, null=True)
     database_created = models.BooleanField(default=False)
-    thumbnail = models.ImageField(upload_to='thumbnails', blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=get_video_thumbnail_path, blank=True, null=True)
     
 
     

@@ -26,8 +26,9 @@ class secureFileView(APIView):
     permission_classes = []#[IsAuthenticated]
     #ToDo: Problem: Videoplayer from Frontend dont have the possibility to send tokens. 
     def get(self, request,path):
-        video_file = 'media/' + path
-        with open(video_file, 'rb') as f:
-            response = HttpResponse(f.read(), content_type='video/mp4')
+        file = 'media/' + path
+        with open(file, 'rb') as f:
+            content_type = 'video/mp4' if path.endswith('mp4') else 'image/png'
+            response = HttpResponse(f.read(), content_type=content_type)
             response['Content-Disposition'] = 'inline; filename="video_file.mp4"'
             return response

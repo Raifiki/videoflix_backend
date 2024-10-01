@@ -7,6 +7,9 @@ import ffmpeg
 def get_video_upload_path(instance, filename):
     return 'videos/' + str(instance.uuid) + '/' + filename
 
+def get_video_thumbnail_path(instance, filename=None):
+    return 'videos/' + str(instance.uuid) + '/thumbnail.jpg'
+
 def generate_and_store_thumbnail(video_file, thumbnail_file):
         probe = ffmpeg.probe(video_file)
         time = float(0)
@@ -23,13 +26,7 @@ def generate_and_store_thumbnail(video_file, thumbnail_file):
                 )
         except ffmpeg.Error as e:
                 print('error:', e.stderr, file=sys.stderr)
-                
-
-
-def generate_thumbnail_folder():
-        if not os.path.exists('media/thumbnails'):
-            os.makedirs('media/thumbnails')
-            
+                            
             
 def convert_video_and_store(video_file, fps):
     new_file_name = video_file.split(".mp4")[0] + "_" + str(fps) +  "p.mp4"
