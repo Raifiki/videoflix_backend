@@ -1,3 +1,4 @@
+from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
@@ -21,4 +22,4 @@ urlpatterns = [
     path('videoflix/v1/user/resetpasswordconfirm/', ResetPasswordConfirmView.as_view()),
     path('media/<path:path>', secureFileView.as_view()),
     path('',include(router.urls))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

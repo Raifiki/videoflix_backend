@@ -9,6 +9,12 @@ from content.serializer import GenreSerializer, VideoSerializer
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
+
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
+from videoflix.settings import CACHE_TTL
+
 # Create your views here.
 
 class VideoViewSet(viewsets.ReadOnlyModelViewSet):
@@ -25,6 +31,7 @@ class GenreViewSet(viewsets.ReadOnlyModelViewSet):
 class secureFileView(APIView):
     permission_classes = []#[IsAuthenticated]
     #ToDo: Problem: Videoplayer from Frontend dont have the possibility to send tokens. 
+    @method_decorator(cache_page(CACHE_TTL))
     def get(self, request,path):
         file = 'media/' + path
         with open(file, 'rb') as f:

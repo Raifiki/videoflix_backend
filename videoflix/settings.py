@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'debug_toolbar',
     'userAuthentication.apps.UserauthenticationConfig',
     'content.apps.ContentConfig',
     'imagekit',
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'userAuthentication.CustomUser'
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -168,5 +170,25 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+# Redis config
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+        "OPTIONS": {
+            "PASSWORD": "foobared",
+        },
+        "KEY_PREFIX": "videoflix"
+    }
+}
+
+CACHE_TTL = 60 * 15 # Cach total life time: 15 minutes
+
+# Django Toolbar
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 
 
