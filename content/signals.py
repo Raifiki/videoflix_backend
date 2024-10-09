@@ -11,6 +11,8 @@ from content.models import Video
 from content.utils import delete_folder_content, generate_and_store_thumbnail, convert_video_and_store, get_video_thumbnail_path
 from videoflix.settings import MEDIA_ROOT
 
+import django_rq
+
 @receiver(post_delete, sender=Video)
 def delete_media_files_on_delete(sender, instance=None, created=False, **kwargs):
     if instance.video:
@@ -30,13 +32,15 @@ def delete_media_files_on_change(sender, instance, **kwargs):
             delete_folder_content(MEDIA_ROOT + '/videos/' + str(instance.uuid))
             instance.thumbnail = None
             instance.database_created = False
-                
+       
+         
         
 @receiver(post_save, sender=Video)
 def generate_single_video_database(sender,instance=None, created=False, **kwargs):
     if not instance.database_created:
         res = [480, 720, 1080]
-        for resolution in res: convert_video_and_store(instance.video.path, resolution)
+        queue = django_rq.get_queue('default', autocommit=True)
+        for resolution in res: queue.enqueue(convert_video_and_store, instance.video.path, resolution)
         thumbnail_path = get_video_thumbnail_path(instance)
         generate_and_store_thumbnail(instance.video.path, MEDIA_ROOT + '/' + thumbnail_path)
         instance.thumbnail = thumbnail_path

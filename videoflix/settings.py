@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'debug_toolbar',
+    'django_rq',
     'userAuthentication.apps.UserauthenticationConfig',
     'content.apps.ContentConfig',
     'imagekit',
@@ -190,5 +191,15 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+# Config of RQ
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': 'foobared',
+        'DEFAULT_TIMEOUT': 360,
+    },
+}
 
 

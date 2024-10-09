@@ -21,5 +21,6 @@ urlpatterns = [
     path('videoflix/v1/user/resetpassword/', ResetPasswordView.as_view()),
     path('videoflix/v1/user/resetpasswordconfirm/', ResetPasswordConfirmView.as_view()),
     path('media/<path:path>', secureFileView.as_view()),
-    path('',include(router.urls))
+    path('',include(router.urls)),
+    path('django-rq/', include('django_rq.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

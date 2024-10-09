@@ -27,12 +27,17 @@ def generate_and_store_thumbnail(video_file, thumbnail_file):
         except ffmpeg.Error as e:
                 print('error:', e.stderr, file=sys.stderr)
                             
+def get_linux_path_from_windows_path(win_path):
+    return '/mnt/' + win_path.replace('\\', '/').replace('C:','c')
             
 def convert_video_and_store(video_file, fps):
     new_file_name = video_file.split(".mp4")[0] + "_" + str(fps) +  "p.mp4"
-    cmd_command = 'ffmpeg -i "{}" -s hd{} -c:v libx264 -crf 23 -c:a aac -strict -2 "{}"'.format(video_file,fps , new_file_name)
-    run = subprocess.run(cmd_command, capture_output=True)
-    
+    source_path = get_linux_path_from_windows_path(video_file)
+    target_path = get_linux_path_from_windows_path(new_file_name)
+    print(source_path, target_path)
+    cmd_command_win = 'ffmpeg -i "{}" -s hd{} -c:v libx264 -crf 23 -c:a aac -strict -2 "{}"'.format(source_path,fps , target_path)
+    run = subprocess.run(cmd_command_win, capture_output=True, shell=True) 
+
 def delete_folder_content(folder):
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
