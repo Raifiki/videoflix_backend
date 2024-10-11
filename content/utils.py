@@ -11,6 +11,7 @@ def get_video_thumbnail_path(instance, filename=None):
     return 'videos/' + str(instance.uuid) + '/thumbnail.jpg'
 
 def generate_and_store_thumbnail(video_file, thumbnail_file):
+        print(video_file, thumbnail_file)
         probe = ffmpeg.probe(video_file)
         time = float(0)
         width = probe['streams'][0]['width']
@@ -32,8 +33,8 @@ def get_linux_path_from_windows_path(win_path):
             
 def convert_video_and_store(video_file, fps):
     new_file_name = video_file.split(".mp4")[0] + "_" + str(fps) +  "p.mp4"
-    source_path = get_linux_path_from_windows_path(video_file)
-    target_path = get_linux_path_from_windows_path(new_file_name)
+    source_path = video_file
+    target_path = new_file_name
     print(source_path, target_path)
     cmd_command_win = 'ffmpeg -i "{}" -s hd{} -c:v libx264 -crf 23 -c:a aac -strict -2 "{}"'.format(source_path,fps , target_path)
     run = subprocess.run(cmd_command_win, capture_output=True, shell=True) 
