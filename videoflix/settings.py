@@ -29,12 +29,14 @@ DEBUG = True
 ALLOWED_HOSTS = [
 		    'localhost',
 		    '127.0.0.1',
+            'leonard-weiss.developerakademie.org'
 		]
 CORS_ALLOWED_ORIGINS = [
 		    'http://localhost:4200',
 		    'http://localhost:8000',
 		    'http://127.0.0.1:8000',
-		    'http://127.0.0.1:4200'
+		    'http://127.0.0.1:4200',
+            'leonard-weiss.developerakademie.org'
 ]
 
 
