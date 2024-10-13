@@ -41,9 +41,8 @@ CORS_ALLOWED_ORIGINS = [
             
 ]
 
-CORS_TRUSTED_ORIGINS = [
-            'http://leonard-weiss.developerakademie.org',
-            'https://leonard-weiss.developerakademie.org',
+CSRF_TRUSTED_ORIGINS = [
+    'https://leonard-weiss.developerakademie.org',
 ]
 
 # Application definition
