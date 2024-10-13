@@ -39,6 +39,7 @@ CORS_ALLOWED_ORIGINS = [
             'https://leonard-weiss.developerakademie.org'
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     'userAuthentication.apps.UserauthenticationConfig',
     'content.apps.ContentConfig',
     'imagekit',
+    'corsheaders',
 ]
 
 # Define custom user model
