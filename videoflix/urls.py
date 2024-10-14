@@ -7,6 +7,7 @@ from content.views import GenreViewSet, VideoViewSet, secureFileView
 from userAuthentication.views import LoginView, ResetPasswordConfirmView, ResetPasswordView, UserView, VerifyEmailView
 from videoflix import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 router = routers.DefaultRouter()
@@ -23,4 +24,4 @@ urlpatterns = [
     path('media/<path:path>', secureFileView.as_view()),
     path('',include(router.urls)),
     path('django-rq/', include('django_rq.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls() + staticfiles_urlpatterns()
