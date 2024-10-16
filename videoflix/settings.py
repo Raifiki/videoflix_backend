@@ -36,6 +36,7 @@ CORS_ALLOWED_ORIGINS = [
 		    'http://localhost:8000',
 		    'http://127.0.0.1:8000',
 		    'http://127.0.0.1:4200',
+            'https://leonard-weiss.developerakademie.net/'
             'http://leonard-weiss.developerakademie.org',
             'https://leonard-weiss.developerakademie.org',
             
@@ -172,7 +173,8 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-FRONTEND_BASE_URL = "http://localhost:4200"
+#FRONTEND_BASE_URL = "http://localhost:4200"
+FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net/"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
