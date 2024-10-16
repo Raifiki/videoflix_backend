@@ -173,9 +173,6 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-#FRONTEND_BASE_URL = "http://localhost:4200"
-FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net/"
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -212,5 +209,7 @@ RQ_QUEUES = {
     },
 }
 
-# Backend URL
+# App Base URL
+#FRONTEND_BASE_URL = "http://localhost:4200"
+FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net//angular-projects/videoflix/"
 BACKEND_BASE_URL = 'https://leonard-weiss.developerakademie.org/videoflix/v1'
