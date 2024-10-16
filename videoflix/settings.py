@@ -210,4 +210,5 @@ RQ_QUEUES = {
     },
 }
 
-
+# Backend URL
+BACKEND_BASE_URL = 'https://leonard-weiss.developerakademie.org/videoflix/v1'

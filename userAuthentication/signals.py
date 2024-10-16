@@ -9,6 +9,8 @@ from django.contrib.auth.tokens import default_token_generator
 from userAuthentication.models import CustomUser
 from rest_framework.authtoken.models import Token
 
+from videoflix.settings import BACKEND_BASE_URL
+
 @receiver(post_save, sender=CustomUser)
 def send_verification_email(sender, instance, created, **kwargs):
     if created:
@@ -19,7 +21,7 @@ def send_verification_email(sender, instance, created, **kwargs):
         
         context = {
             'username': mail.split('@')[0],
-            'verification_url': 'http://127.0.0.1:8000/videoflix/v1/user/verify/?user_id=' + str(instance.pk) + '&token=' + token
+            'verification_url': BACKEND_BASE_URL + '/user/verify/?user_id=' + str(instance.pk) + '&token=' + token
         }
         text_content = 'Please verify your email'
         html_content = render_to_string('verification_email.html', context)
