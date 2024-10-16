@@ -17,6 +17,9 @@ class LoginCustomUserAuthentication(BaseAuthentication):
 
         if not user.check_password(password):
             raise AuthenticationFailed('Invalid password')
+        
+        if not user.is_active:
+            raise AuthenticationFailed('email adress not verified')
 
         return (user, None)
 
