@@ -211,5 +211,5 @@ RQ_QUEUES = {
 
 # App Base URL
 #FRONTEND_BASE_URL = "http://localhost:4200"
-FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net//angular-projects/videoflix"
+FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net/angular-projects/videoflix"
 BACKEND_BASE_URL = 'https://leonard-weiss.developerakademie.org/videoflix/v1'
