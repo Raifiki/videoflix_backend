@@ -13,7 +13,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from videoflix.settings import FRONTEND_BASE_URL
+from videoflix.settings import EMAIL_HOST_USER, FRONTEND_BASE_URL
 
 # Create your views here.
 class UserView(APIView):
@@ -59,8 +59,8 @@ class ResetPasswordView(APIView):
     
     def _send_password_reset_email(self, email):
         user = CustomUser.objects.get(email=email)
-        mail = 'leonard_weiss@web.de'# ToDo: change email to: email
-        from_mail = 'django@demomailtrap.com' # ToDo: change email to domain email
+        mail = user.email
+        from_mail = EMAIL_HOST_USER
         token = self._generate_password_reset_token(user)
         subject = 'Reset your Password'
         context = {
