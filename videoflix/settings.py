@@ -37,7 +37,7 @@ CORS_ALLOWED_ORIGINS = [
 		    'http://localhost:8000',
 		    'http://127.0.0.1:8000',
 		    'http://127.0.0.1:4200',
-            'https://leonard-weiss.developerakademie.net/'
+            'https://leonard-weiss.developerakademie.net/',
             'https://leonard-weiss.developerakademie.org',
             'https://videoflix.leonard-weiss.com',
             
