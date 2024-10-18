@@ -29,21 +29,22 @@ DEBUG = True
 ALLOWED_HOSTS = [
 		    'localhost',
 		    '127.0.0.1',
-            'leonard-weiss.developerakademie.org'
 		]
+
 CORS_ALLOWED_ORIGINS = [
 		    'http://localhost:4200',
 		    'http://localhost:8000',
 		    'http://127.0.0.1:8000',
 		    'http://127.0.0.1:4200',
             'https://leonard-weiss.developerakademie.net/'
-            'http://leonard-weiss.developerakademie.org',
             'https://leonard-weiss.developerakademie.org',
+            'https://videoflix.leonard-weiss.com',
             
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://leonard-weiss.developerakademie.org',
+    'https://videoflix.leonard-weiss.com',
 ]
 
 # Application definition
@@ -211,5 +212,6 @@ RQ_QUEUES = {
 
 # App Base URL
 #FRONTEND_BASE_URL = "http://localhost:4200"
-FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net/angular-projects/videoflix"
-BACKEND_BASE_URL = 'https://leonard-weiss.developerakademie.org/videoflix/v1'
+#FRONTEND_BASE_URL = "https://leonard-weiss.developerakademie.net/angular-projects/videoflix"
+FRONTEND_BASE_URL = "https://videoflix.leonard-weiss.com"
+BACKEND_BASE_URL = "https://leonard-weiss.developerakademie.org/videoflix/v1"
