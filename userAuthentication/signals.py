@@ -15,7 +15,7 @@ from videoflix.settings import BACKEND_BASE_URL
 def send_verification_email(sender, instance, created, **kwargs):
     if created:
         mail = 'leonard_weiss@web.de'# ToDo: change email to: instance.email
-        from_mail = 'django@demomailtrap.com' # ToDo: change email to domain email
+        from_mail = 'admin@leonard-weiss.com' # ToDo: change email to domain email
         token = default_token_generator.make_token(instance)
         subject = 'Verify your email'
         
