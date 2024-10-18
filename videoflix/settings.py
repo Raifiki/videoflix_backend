@@ -158,10 +158,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'live.smtp.mailtrap.io'
-EMAIL_HOST_USER = 'api'
-EMAIL_HOST_PASSWORD = '88f0a49d8a2d7c6c9d82ed73f17b04fb'
-EMAIL_PORT = '587'
+#EMAIL_HOST = 'live.smtp.mailtrap.io'
+EMAIL_HOST = 'w01f8bf0.kasserver.com'
+#EMAIL_HOST_USER = 'api'
+EMAIL_HOST_USER = 'admin@leonard-weiss.com' #m0727f95
+EMAIL_HOST_PASSWORD = 'Videoflix2024!'
+EMAIL_PORT = '465'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
