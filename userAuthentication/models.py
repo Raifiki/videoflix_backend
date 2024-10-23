@@ -3,7 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
+    """ This class is used to create users"""
     def _create_user(self, email, password=None, **extra_fields):
+        """ This methode is used to create users"""
         if not email:
             raise ValueError('The Email must be set')
         email = self.normalize_email(email)
@@ -13,11 +15,13 @@ class CustomUserManager(BaseUserManager):
         return user
     
     def create_user(self, email, password=None, **extra_fields):
+        """ This methode is used to create a normal users"""
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(email, password, **extra_fields)
     
     def create_superuser(self, email, password=None, **extra_fields):
+        """ This methode is used to create a superuser"""
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
@@ -28,6 +32,7 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """ This class is for custom user model"""
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)

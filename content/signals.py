@@ -12,13 +12,14 @@ from content.utils import delete_folder_content, generate_and_store_thumbnail, c
 from videoflix.settings import MEDIA_ROOT
 
 import django_rq
-
+""" Signal that is called when a video is deleted --> If the the video is in database, the media files are deleted"""
 @receiver(post_delete, sender=Video)
 def delete_media_files_on_delete(sender, instance=None, created=False, **kwargs):
     if instance.video:
         video_database_folder = MEDIA_ROOT + '/videos/' + str(instance.uuid)
         shutil.rmtree(video_database_folder)
         
+""" Signal that is called before a video is saved --> IF the video is in database and the video is changed, the media files are deleted"""
 @receiver(pre_save, sender=Video)
 def delete_media_files_on_change(sender, instance, **kwargs):
     if not instance.pk:
@@ -34,7 +35,7 @@ def delete_media_files_on_change(sender, instance, **kwargs):
             instance.database_created = False
        
          
-        
+""" Signal that is called after a video is saved --> If the video_database is not created, the media files wlll be created"""
 @receiver(post_save, sender=Video)
 def generate_single_video_database(sender,instance=None, created=False, **kwargs):
     if not instance.database_created:

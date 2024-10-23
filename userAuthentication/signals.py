@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 
 from videoflix.settings import BACKEND_BASE_URL, EMAIL_HOST_USER
 
+""" Signal that is called when a user is created --> A verification email is sent to the user"""
 @receiver(post_save, sender=CustomUser)
 def send_verification_email(sender, instance, created, **kwargs):
     if created:
@@ -26,6 +27,7 @@ def send_verification_email(sender, instance, created, **kwargs):
         html_content = render_to_string('verification_email.html', context)
         send_mail(subject, text_content, from_mail, [mail], html_message=html_content)
 
+""" Signal that is called when a user is created --> A token is generated for the user"""
 @receiver(post_save, sender=CustomUser)
 def gen_auth_token_for_user(sender, instance=None, created=False, **kwargs):
     if created:

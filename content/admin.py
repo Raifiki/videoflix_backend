@@ -4,6 +4,7 @@ from content.models import Genre, Video
 
 # Register your models here.
 class AdminVideo(admin.ModelAdmin):
+    """ Class to display Video model in admin panel with uuid, title and description"""
     list_display = [
         'uuid',
         'title',
@@ -14,6 +15,7 @@ class AdminVideo(admin.ModelAdmin):
 admin.site.register(Video, AdminVideo)
 
 class AdminGenre(admin.ModelAdmin):
+    """ Class to display Genre model in admin panel with id and name"""
     list_display = [
         'id',
         'name',

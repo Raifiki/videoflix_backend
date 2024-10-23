@@ -17,9 +17,11 @@ from videoflix.settings import EMAIL_HOST_USER, FRONTEND_BASE_URL
 
 # Create your views here.
 class UserView(APIView):
+    """ View to create a new user"""
     serializer_class = CustomUserSerializer
     
     def post(self, request):
+        """ Post Methode to create a new user"""
         serializer = CreateCustomUserSerializer(data = request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
@@ -28,13 +30,13 @@ class UserView(APIView):
             respData = CustomUserSerializer(user).data
             return  Response(respData, content_type='application/json')
         return Response(serializer.errors, status=400)
-    
-# ToDo: Eventuell UserView, ResetPwd und VerifyEmail in ein Viewset mit create und put Methoden 
 
 
 class VerifyEmailView(APIView):
+    """ View to verify email"""
     authentication_classes = [EmailVerificationAuthentication]
     def get(self, request):
+        """ Get Methode to verify email and set is_active to True"""
         user = request.user
         user.is_active = True
         user.save()
@@ -42,14 +44,18 @@ class VerifyEmailView(APIView):
         return HttpResponseRedirect(redirect_url)
     
 class LoginView(ObtainAuthToken):
+    """ View to login user"""
     authentication_classes = [LoginCustomUserAuthentication]
     def post(self, request):
+        """ Post Methode to login user and return user data token"""
         user = request.user
         respData = CustomUserSerializer(user).data
         return Response(respData, content_type='application/json')
     
 class ResetPasswordView(APIView):
+    """ View to reset password"""
     def post(self, request):
+        """ Post Methode to send reset password email"""
         serializer = PasswordResetSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
@@ -58,6 +64,7 @@ class ResetPasswordView(APIView):
         return Response(serializer.errors, status=400)
     
     def _send_password_reset_email(self, email):
+        """ Send password reset email"""
         user = CustomUser.objects.get(email=email)
         mail = user.email
         from_mail = EMAIL_HOST_USER
@@ -72,12 +79,15 @@ class ResetPasswordView(APIView):
         send_mail(subject, text_content, from_mail, [mail], html_message=html_content)
         
     def _generate_password_reset_token(self, user):
+        """ Generate password reset token"""
         token_generator=PasswordResetTokenGenerator()
         return token_generator.make_token(user)
         
 class ResetPasswordConfirmView(APIView):
+    """ View to confirm reset password"""
     authentication_classes = [ResetPasswordTokenAuthentication]
     def post(self, request):
+        """ Post Methode to trigger reset password"""
         serializer = PasswordResetConfirmSerializer(data=request.data)
         if serializer.is_valid():
             new_password = serializer.validated_data['new_password']
@@ -86,5 +96,6 @@ class ResetPasswordConfirmView(APIView):
         return Response(serializer.errors, status=400)
     
     def _change_password(self, user, new_password):
+        """Methode to Change password on database"""
         user.set_password(new_password)
         user.save()
